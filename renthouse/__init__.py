@@ -10,6 +10,16 @@ index_url = 'http://alberlet.hu/kiado_alberlet'
 def get_video_page_urls():
     response = requests.get(index_url)
     soup = bs4.BeautifulSoup(response.text)
-    return [a.attrs.get('href') for a in soup.select('div.listing-image a[href^=/]')]
+    links = []
+    #return [a.attrs["href"] for a in soup.select('div.listing-image')]
+    #soup.find_all('a', href=True):
+    #for links in [a.attrs["href"] for a in soup.select('div.listing-image')]:
+    #     if links['href'] == '' or links['href'].startswith('#'):
+    #        continue
+    #     print "Found the URL:", links['href']
+    divs = soup.find_all('div', attrs={'class' : 'listing-image'})
+    for div in divs:
+        print div.find('a')['href']
 
-print(get_video_page_urls())
+
+get_video_page_urls()
