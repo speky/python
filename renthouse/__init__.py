@@ -2,6 +2,7 @@
 
 __author__ = 'speky'
 import alberlet
+from alberlet import *
 import tkinter
 from tkinter import *
 
@@ -74,8 +75,8 @@ class Gui(Frame):
         self.label.configure(text="click")
         _values = [self.Lb1.get(idx) for idx in self.Lb1.curselection()]
         _message = ', '.join(_values)
-        self.save_file()
-        self.show_message(_message)
+
+        self.show_message(alberlet.get_max_page_number())
 
 
     def show_message(self, message):
