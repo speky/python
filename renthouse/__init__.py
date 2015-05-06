@@ -56,6 +56,10 @@ class Gui(Frame):
         self.c.pack()
 
 
+    def save_file(self):
+        with open("Output.txt", "w") as text_file:
+            text_file.write("Purchase Amount: {0}\n".format(123345))
+
     def cb(self):
         print "variable is", self.var.get()
 
@@ -70,7 +74,7 @@ class Gui(Frame):
         self.label.configure(text="click")
         _values = [self.Lb1.get(idx) for idx in self.Lb1.curselection()]
         _message = ', '.join(_values)
-        print self.e.get()
+        self.save_file()
         self.show_message(_message)
 
 
