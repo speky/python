@@ -38,4 +38,4 @@ linkLists = []
 
 for list in linkLists:
     for elem in list:
-       print elem
+       print (elem)
