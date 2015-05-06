@@ -1,35 +1,51 @@
+#!/usr/bin/python
+
 __author__ = 'speky'
-import requests
-import bs4
+import alberlet
+import Tkinter
 
-root_url = 'http://pyvideo.org'
-index_url = 'http://alberlet.hu/kiado_alberlet'
+window = Tkinter.Tk()
 
-#links = soup.select('div.video-summary-data a[href^=/video]')
+label = Tkinter.Label(window, text="label")
+Lb1 = Tkinter.Listbox(window, selectmode=Tkinter.MULTIPLE, height=3)
 
-def get_max_page_number():
-    response = requests.get(index_url+"/page:1000")
-    soup = bs4.BeautifulSoup(response.text)
-    max_page = soup.find('li', attrs={'class' : 'current'})
-    return max_page.text
+def init_window():
+    window.title("Awsome kereso")
+    #window.geometry("500x500")
+    label.pack()
+
+    Lb1.insert(1, "Python")
+    Lb1.insert(2, "Perl")
+    Lb1.insert(3, "C")
+    Lb1.bind('<<ListboxSelect>>', onselect)
+    Lb1.pack()
+
+    button = Tkinter.Button(window, text="click", command=callback_click)
+    button.pack()
+
+def onselect(evt):
+    # Note here that Tkinter passes an event object to onselect()
+    w = evt.widget
+    index = int(w.curselection()[0])
+    value = w.get(index)
+    print 'You selected item %d: "%s"' % (index, value)
+
+def callback_click():
+    label.configure(text="click")
+    _values = [Lb1.get(idx) for idx in Lb1.curselection()]
+    _message = ', '.join(_values)
+    show_message(_message)
 
 
-def get_video_page_urls():
-    response = requests.get(index_url)
-    soup = bs4.BeautifulSoup(response.text)
+def show_message(message):
+    _messageWindow = Tkinter.Tk()
+    _msg = Tkinter.Message(_messageWindow, text = message, width = 200)
+    _button = Tkinter.Button(_messageWindow, text='Ok', command = _messageWindow.destroy)
+    _msg.pack()
+    _button.pack()
+    _messageWindow.mainloop()
 
-    print get_max_page_number()
-    links = []
-    #return [a.attrs["href"] for a in soup.select('div.listing-image')]
-    #soup.find_all('a', href=True):
-    #for links in [a.attrs["href"] for a in soup.select('div.listing-image')]:
-    #     if links['href'] == '' or links['href'].startswith('#'):
-    #        continue
-    #     print "Found the URL:", links['href']
-    divs = soup.find_all('div', attrs={'class' : 'listing-image'})
-
-    for div in divs:
-        print div.find('a')['href']
+init_window()
 
 
-get_video_page_urls()
+window.mainloop()
