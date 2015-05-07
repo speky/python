@@ -1,6 +1,7 @@
 __author__ = 'speky'
 import requests
 import bs4
+import operator
 
 root_url = 'http://alberlet.hu'
 index_url = root_url + '/kiado_alberlet/ingatlan-tipus:lakas/kerulet:xxiii/megye:budapest/keres:advanced/limit:32'
@@ -52,29 +53,37 @@ def get_page_urls():
 
     # find the rent box div
     divs = soup.find_all('div', attrs={'class': 'listing-item'})
-    #print(divs)
+    # print(divs)
 
-    rentHouses = {} # dictionary
+    rentHouses = {}  # dictionary
 
     for div in divs:
-       # link = get_link(div)
-       # street = get_address(div)
-       # price = get_price(div)
-       # size = get_area_size(div)
-        rentHouses['abc'] = ['street1', 'price', 'size1', 2]
-        rentHouses['dfg'] = ['street2', 'price', 'size2', 2]
-        print(rentHouses)
-        for key, values in rentHouses.items():
-            print(values[2])
+        # link = get_link(div)
+        # street = get_address(div)
+        # price = get_price(div)
+        # size = get_area_size(div)
+        rentHouses ={
+            'abc': {'address': 'street1', 'price': '15', 'size': '1', 'distance': '4'},
+            'dfg': {'address': 'street2', 'price': '12', 'size': '3', 'distance': '2'},
+            'wer': {'address': 'street2', 'price': '13', 'size': '2', 'distance': '1'}
+        }
 
-        # LAST_PAGE = int(get_max_page_number())
-        # print LAST_PAGE
-        # linkLists = []
+        items = rentHouses.items()
 
-        #for pageNumber in range(1, LAST_PAGE + 1):
-        #    print "pageNumber: " + str(pageNumber)
-        #   linkLists.append(get_video_page_urls(index_url + '/page:' + str(pageNumber)))
+        sorted_items = sorted(items, key=lambda kvt: kvt[1]['price'])
 
-        #for list in linkLists:
-        #    for elem in list:
-        #        print(elem)
+        for key, values in sorted_items:
+            print(values)
+
+
+            # LAST_PAGE = int(get_max_page_number())
+            # print LAST_PAGE
+            # linkLists = []
+
+            #for pageNumber in range(1, LAST_PAGE + 1):
+            #    print "pageNumber: " + str(pageNumber)
+            #   linkLists.append(get_video_page_urls(index_url + '/page:' + str(pageNumber)))
+
+            #for list in linkLists:
+            #    for elem in list:
+            #        print(elem)
