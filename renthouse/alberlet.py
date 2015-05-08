@@ -63,14 +63,14 @@ def get_page_urls():
         # price = get_price(div)
         # size = get_area_size(div)
         rentHouses ={
-            'abc': {'address': 'street1', 'price': '15', 'size': '1', 'distance': '4'},
-            'dfg': {'address': 'street2', 'price': '12', 'size': '3', 'distance': '2'},
-            'wer': {'address': 'street2', 'price': '13', 'size': '2', 'distance': '1'}
+            'abc': {'address': 'street1', 'price': '15', 'size': '1', 'distance': '20'},
+            'dfg': {'address': 'street2', 'price': '15', 'size': '3', 'distance': '200'},
+            'wer': {'address': 'street2', 'price': '13', 'size': '2', 'distance': '100'}
         }
 
         items = rentHouses.items()
 
-        sorted_items = sorted(items, key=lambda kvt: kvt[1]['price'])
+        sorted_items = sorted(items, key=lambda kvt: (kvt[1]['price'], kvt[1]['distance']))
 
         for key, values in sorted_items:
             print(values)

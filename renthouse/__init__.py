@@ -13,41 +13,46 @@ from geopy.distance import vincenty
 class Gui(Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
-        self.pack()
+
         self.master = master
         self.init_window()
+        #self.pack()
+
+    def add_portal_list(self):
+        self.label = Label(self.master, text="Oldalak ahol keres")
+        self.label.grid(row=0, column=0)
+
+        self.Lb1 = Listbox(self.master, selectmode=MULTIPLE, height=3)
+        self.Lb1.insert(1, 'alberlet.hu')
+        # self.Lb1.insert(2, "...")
+
+        self.Lb1.bind('<<ListboxSelect>>', self.onselect)
+        self.Lb1.grid(row=1, column=0)
+        # select all
+        self.Lb1.select_set(0, END)
+
 
     def init_window(self):
-        self.master.title("Awsome kereso")
+        self.master.title("Alberlet kereso")
         # get screen width and height
         ws = self.master.winfo_screenwidth()  # This value is the width of the screen
         hs = self.master.winfo_screenheight()  # This is the height of the screen
         # make my screen dimensions work
-        w = 200  # The value of the width
-        h = 200  # The value of the height of the window
+        w = 300  # The value of the width
+        h = 300  # The value of the height of the window
         # calculate position x, y
         x = (ws / 2) - (w / 2)
         y = (hs / 2) - (h / 2)
         # This is responsible for setting the dimensions of the screen and where it is placed
         self.master.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
-        self.label = Label(self.master, text="label")
-        self.Lb1 = Listbox(self.master, selectmode=MULTIPLE, height=3)
-        self.label.pack()
-
-        self.Lb1.insert(1, "Python")
-        self.Lb1.insert(2, "Perl")
-        self.Lb1.insert(3, "C")
-        self.Lb1.bind('<<ListboxSelect>>', self.onselect)
-        self.Lb1.pack()
-        # self.Lb1.select_set(0) # sets the first element
-        self.Lb1.select_set(0, END)
+        self.add_portal_list()
 
         button = Button(self.master, text="click", command=self.callback_click)
-        button.pack()
+        button.grid(row=5)
 
         self.e = Entry(self.master, width=5)
-        self.e.pack()
+        #self.e.pack()
         self.e.delete(0, END)
         self.e.insert(0, "25")
 
@@ -58,7 +63,8 @@ class Gui(Frame):
             variable=self.var,
             command=self.cb)
         self.c.select()
-        self.c.pack()
+        #self.c.pack()
+
 
     def save_file(self):
         with open("Output.txt", "w") as text_file:
@@ -105,5 +111,10 @@ if __name__ == '__main__':
     alberlet.get_page_urls()
     root = Tk()
     gui = Gui(master=root)
+    # column 0 - do not expand
+    root.columnconfigure(0, weight=0)
+
+    # column 1 - expand
+    root.columnconfigure(1, weight=1)
     gui.mainloop()
 
