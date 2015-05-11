@@ -36,15 +36,20 @@ class AlberletSearch(base.BaseSearch):
 
         print(self.url)
 
-    def get_page_urls(self):
-        response = requests.get(self.url)
-        soup = bs4.BeautifulSoup(response.text)
+    def get_urls(self):
+        _lastPage = int(self.__get_max_page_number())
+        #print("lastpage: "+str(_lastPage))
+        for pageNumber in range(1, _lastPage + 1):
+            #print ("pageNumber: " + str(pageNumber))
+            self.__get_page_urls(pageNumber)
+        return self.numberOflinks
 
+    def __get_page_urls(self, pageNum):
+        response = requests.get(self.url+"/page:"+str(pageNum))
+        soup = bs4.BeautifulSoup(response.text)
         # find the rent box div
         divs = soup.find_all('div', attrs={'class': 'listing-item'})
         # print(divs)
-
-        self.rentHouses = {}  # dictionary
         for div in divs:
             self.numberOflinks += 1
             link = self.__get_link(div)
@@ -53,31 +58,16 @@ class AlberletSearch(base.BaseSearch):
             size = self.__get_area_size(div)
             self.rentHouses[link] = {'address': street, 'price': price, 'size': size, 'distance': 0}
 
-            #self.rentHouses ={
-            #    'abc': {'address': 'street1', 'price': '15', 'size': '1', 'distance': '20'},
-            #    'dfg': {'address': 'street2', 'price': '15', 'size': '3', 'distance': '200'},
-            #    'wer': {'address': 'street2', 'price': '13', 'size': '2', 'distance': '100'}
-            #}
+        #self.rentHouses ={
+        #    'abc': {'address': 'street1', 'price': '15', 'size': '1', 'distance': '20'},
+        #    'dfg': {'address': 'street2', 'price': '15', 'size': '3', 'distance': '200'},
+        #    'wer': {'address': 'street2', 'price': '13', 'size': '2', 'distance': '100'}
+        #}
+        #items = self.rentHouses.items()
+        #sorted_items = sorted(items, key=lambda kvt: (kvt[1]['price'], kvt[1]['size']))
+        #for key, values in sorted_items:
+        #    print(key + " : " + str(values))
 
-            #items = self.rentHouses.items()
-            #sorted_items = sorted(items, key=lambda kvt: (kvt[1]['price'], kvt[1]['distance']))
-            #for key, values in sorted_items:
-            #    print(values)
-
-            # LAST_PAGE = int(get_max_page_number())
-            #for pageNumber in range(1, LAST_PAGE + 1):
-            #    print "pageNumber: " + str(pageNumber)
-            #   linkLists.append(get_video_page_urls(index_url + '/page:' + str(pageNumber)))
-
-            #for list in linkLists:
-            #    for elem in list:
-            #        print(elem)
-        items = self.rentHouses.items()
-        sorted_items = sorted(items, key=lambda kvt: (kvt[1]['price'], kvt[1]['distance']))
-        for key, values in sorted_items:
-            print(values)
-
-        return self.numberOflinks
 
     def __get_area_size(self, div):
         _p = div.find('p', attrs={'class': 'listing-rooms'})
@@ -88,9 +78,11 @@ class AlberletSearch(base.BaseSearch):
         return _size
 
     def __get_max_page_number(self):
-        _response = requests.get(self.index_url + "/page:last")
+        _response = requests.get(self.url + "/page:last")
         _soup = bs4.BeautifulSoup(_response.text)
         _max = _soup.find('li', attrs={'class': 'current'})
+        if (_max == None):
+            return 0
         return _max.text
 
     def __get_link(self, div):

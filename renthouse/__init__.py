@@ -80,14 +80,14 @@ class Gui(Frame):
         self.furnitureCheckBox.grid(row=5, column=3)
 
 
-    def add_found(self):
-        self.labelFounds = Label(self.master, text="Találtaok:")
-        self.labelFounds.grid(row=6, column=0, sticky=E)
+    def add_result(self):
+        self.labelResults = Label(self.master, text="Találtaok:")
+        self.labelResults.grid(row=6, column=0, sticky=E)
 
-        self.entryFounds = Entry(self.master, width=5)
-        self.entryFounds.grid(row=6, column=1, sticky=W)
-        self.entryFounds .delete(0, END)
-        self.entryFounds .insert(0, "0")
+        self.entryResults = Entry(self.master, width=5)
+        self.entryResults.grid(row=6, column=1, sticky=W)
+        self.entryResults.delete(0, END)
+        self.entryResults.insert(0, "0")
 
 
     def add_district(self):
@@ -96,8 +96,8 @@ class Gui(Frame):
 
         self.entryFounds = Entry(self.master, width=10)
         self.entryFounds.grid(row=6, column=3, sticky=W)
-        self.entryFounds .delete(0, END)
-        self.entryFounds .insert(0, "xiv+xvi")
+        self.entryFounds.delete(0, END)
+        self.entryFounds.insert(0, "xiv+xvi")
 
     def init_window(self):
         self.master.title("Alberlet kereso")
@@ -117,7 +117,7 @@ class Gui(Frame):
         self.add_price()
         self.add_size()
         self.add_checkboxes()
-        self.add_found()
+        self.add_result()
         self.add_district()
 
         button = Button(self.master, text="Keresés", command=self.callback_click)
@@ -158,7 +158,9 @@ class Gui(Frame):
 
         alberlet = AlberletSearch()
         alberlet.set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(), self.entrySize2.get(),self.dog, self.furniture, self.entryFounds.get())
-        alberlet.get_page_urls()
+        _results = alberlet.get_urls()
+        self.entryResults.delete(0, END)
+        self.entryResults.insert(0, str(_results))
 
         # self.show_message(alberlet.get_max_page_number())
         #self.show_message(self.show_dist())
