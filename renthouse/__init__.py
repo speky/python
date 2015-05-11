@@ -5,6 +5,8 @@ import alberlet
 from alberlet import *
 import tkinter
 from tkinter import *
+from tkinter import ttk
+
 
 from geopy.geocoders import Nominatim
 from geopy.distance import vincenty
@@ -105,8 +107,8 @@ class Gui(Frame):
         ws = self.master.winfo_screenwidth()  # This value is the width of the screen
         hs = self.master.winfo_screenheight()  # This is the height of the screen
         # make my screen dimensions work
-        w = 350  # The value of the width
-        h = 360  # The value of the height of the window
+        w = 450  # The value of the width
+        h = 400  # The value of the height of the window
         # calculate position x, y
         x = (ws / 2) - (w / 2)
         y = (hs / 2) - (h / 2)
@@ -123,10 +125,18 @@ class Gui(Frame):
         button = Button(self.master, text="Keresés", command=self.callback_click)
         button.grid(row=5, column=0, columnspan=2)
 
-        self.text = Text(self.master, width=40, height=10)
-        self.text.grid(row=7, column=0, columnspan=5, rowspan=3, padx=5, pady=5)
-        self.text.grid(row=7, column=0, columnspan=5, rowspan=3, padx=5, pady=5)
+        #self.text = Text(self.master, width=40, height=10)
+        #self.text.grid(row=7, column=0, columnspan=5, rowspan=3, padx=5, pady=5)
        #     self.text.insert(INSERT, "asdasdsdfg \n")
+
+        tree = ttk.Treeview(self.master)
+        tree["columns"]=("one","two")
+        tree.column("one", width=100)
+        tree.column("two", width=100)
+        tree.heading("one", text="coulmn A")
+        tree.heading("two", text="column B")
+        tree.insert("" , 0,    text="Line 1", values=("1A","1b"))
+        tree.grid(row=7, column=0, columnspan=4, rowspan=4, padx=5, pady=5)
 
 
     def save_file(self):
