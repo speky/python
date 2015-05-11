@@ -4,8 +4,15 @@ import bs4
 import operator
 
 root_url = 'http://alberlet.hu'
-index_url = root_url + '/kiado_alberlet/ingatlan-tipus:lakas/kerulet:xxiii/megye:budapest/keres:advanced/limit:32'
+index_url = root_url + '/kiado_alberlet/ingatlan-tipus:lakas/keres:advanced/limit:48/megye:budapest/'
 # '/kiado_alberlet/berleti-dij:0-50-ezer-ft/ingatlan-tipus:lakas/ingatlan:tegla/limit:48'
+berendezes_string = "/berendezes:2"
+kisallat_string = "/haziallat-engedelyezve:igen"
+tegla_string = "/ingatlan:tegla"
+kerulet_string = "/kerulet:"
+meret_string = "/meret:"
+dij_string = "berleti-dij:"
+
 
 def get_max_page_number():
     _response = requests.get(index_url + "/page:last")
