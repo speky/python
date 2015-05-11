@@ -27,7 +27,7 @@ class Gui(Frame):
         # self.Lb1.insert(2, "...")
 
         self.Lb1.bind('<<ListboxSelect>>', self.onselect)
-        self.Lb1.grid(row=1, column=0, columnspan=2, rowspan=2)
+        self.Lb1.grid(row=1, column=0, columnspan=2, rowspan=2, padx=10)
         # select all
         self.Lb1.select_set(0, END)
 
@@ -94,7 +94,7 @@ class Gui(Frame):
         self.labelDistrict = Label(self.master, text="Kerülets:")
         self.labelDistrict.grid(row=6, column=2, sticky=E)
 
-        self.entryFounds = Entry(self.master, width=15)
+        self.entryFounds = Entry(self.master, width=10)
         self.entryFounds.grid(row=6, column=3, sticky=W)
         self.entryFounds .delete(0, END)
         self.entryFounds .insert(0, "xiv+xvi")
@@ -155,6 +155,11 @@ class Gui(Frame):
         _values = [self.Lb1.get(idx) for idx in self.Lb1.curselection()]
         _message = ', '.join(_values)
         print(_values)
+
+        alberlet = AlberletSearch()
+        alberlet.set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(), self.entrySize2.get(),self.dog, self.furniture, self.entryFounds.get())
+        alberlet.get_page_urls()
+
         # self.show_message(alberlet.get_max_page_number())
         #self.show_message(self.show_dist())
 
@@ -168,7 +173,6 @@ class Gui(Frame):
 
 
 if __name__ == '__main__':
-    alberlet.get_page_urls()
     root = Tk()
     root.resizable(width=FALSE, height=FALSE)
     gui = Gui(master=root)
