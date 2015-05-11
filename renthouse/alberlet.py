@@ -24,16 +24,12 @@ class AlberletSearch(base.BaseSearch):
         if len(str(district)) > 0:
             self.url += self.district_string
             self.url += str(district)
-
         if dog == 1:
             self.url += self.dog_string
-
         if furniture == 1:
             self.url += self.furniture_string
-
         self.url += self.size_string+str(min_size)+"-"+str(max_size)+"-m2"
         self.url += self.cost_string+str(min_cost)+"-"+str(max_cost)+"-ezer-ft"
-
         print(self.url)
 
     def get_urls(self):
@@ -58,17 +54,6 @@ class AlberletSearch(base.BaseSearch):
             size = self.__get_area_size(div)
             self.rentHouses[link] = {'address': street, 'price': price, 'size': size, 'distance': 0}
 
-        #self.rentHouses ={
-        #    'abc': {'address': 'street1', 'price': '15', 'size': '1', 'distance': '20'},
-        #    'dfg': {'address': 'street2', 'price': '15', 'size': '3', 'distance': '200'},
-        #    'wer': {'address': 'street2', 'price': '13', 'size': '2', 'distance': '100'}
-        #}
-        #items = self.rentHouses.items()
-        #sorted_items = sorted(items, key=lambda kvt: (kvt[1]['price'], kvt[1]['size']))
-        #for key, values in sorted_items:
-        #    print(key + " : " + str(values))
-
-
     def __get_area_size(self, div):
         _p = div.find('p', attrs={'class': 'listing-rooms'})
         _size = _p.find('b').text
@@ -82,7 +67,7 @@ class AlberletSearch(base.BaseSearch):
         _soup = bs4.BeautifulSoup(_response.text)
         _max = _soup.find('li', attrs={'class': 'current'})
         if (_max == None):
-            return 0
+            return 1
         return _max.text
 
     def __get_link(self, div):

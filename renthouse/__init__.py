@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 __author__ = 'speky'
+
 import alberlet
 from alberlet import *
 import tkinter
 from tkinter import *
 from tkinter import ttk
-
-
+import webbrowser
 from geopy.geocoders import Nominatim
 from geopy.distance import vincenty
 
@@ -15,54 +15,42 @@ from geopy.distance import vincenty
 class Gui(Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
-
         self.master = master
         self.init_window()
-
 
     def add_portal_list(self):
         self.labelSearch = Label(self.master, text="Oldalak ahol keres")
         self.labelSearch.grid(row=0, column=0, columnspan=2)
-
         self.Lb1 = Listbox(self.master, selectmode=MULTIPLE, height=3)
         self.Lb1.insert(1, 'alberlet.hu')
         # self.Lb1.insert(2, "...")
-
-        self.Lb1.bind('<<ListboxSelect>>', self.onselect)
         self.Lb1.grid(row=1, column=0, columnspan=2, rowspan=2, padx=10)
         # select all
         self.Lb1.select_set(0, END)
 
-
     def add_price(self):
         self.label = Label(self.master, text="Ár (ezerFt)")
         self.label.grid(columnspan=2, row=0, column=2)
-
         self.entryPrice = Entry(self.master, width=5)
         self.entryPrice.grid(row=1, column=2)
         self.entryPrice.delete(0, END)
         self.entryPrice.insert(0, "0")
-
         self.entryPrice2 = Entry(self.master, width=5)
         self.entryPrice2.grid(row=1, column=3, padx=10)
         self.entryPrice2.delete(0, END)
         self.entryPrice2.insert(0, "60")
 
-
     def add_size(self):
         self.labelSize = Label(self.master, text="Méret (m^2)")
-        self.labelSize.grid(columnspan=2,row=2, column=2)
-
+        self.labelSize.grid(columnspan=2, row=2, column=2)
         self.entrySize = Entry(self.master, width=5)
         self.entrySize.grid(row=3, column=2)
         self.entrySize.delete(0, END)
         self.entrySize.insert(0, "0")
-
         self.entrySize2 = Entry(self.master, width=5)
         self.entrySize2.grid(row=3, column=3, padx=10)
         self.entrySize2.delete(0, END)
         self.entrySize2.insert(0, "x")
-
 
     def add_checkboxes(self):
         self.dog = IntVar()
@@ -72,7 +60,6 @@ class Gui(Frame):
             variable=self.dog)
         self.dogCheckBox.select()
         self.dogCheckBox.grid(row=5, column=2)
-
         self.furniture = IntVar()
         self.furnitureCheckBox = Checkbutton(
             self.master,
@@ -81,25 +68,36 @@ class Gui(Frame):
         self.furnitureCheckBox.select()
         self.furnitureCheckBox.grid(row=5, column=3)
 
-
     def add_result(self):
-        self.labelResults = Label(self.master, text="Találtaok:")
+        self.labelResults = Label(self.master, text="Találatok:")
         self.labelResults.grid(row=6, column=0, sticky=E)
-
         self.entryResults = Entry(self.master, width=5)
         self.entryResults.grid(row=6, column=1, sticky=W)
         self.entryResults.delete(0, END)
         self.entryResults.insert(0, "0")
 
-
     def add_district(self):
         self.labelDistrict = Label(self.master, text="Kerülets:")
         self.labelDistrict.grid(row=6, column=2, sticky=E)
-
         self.entryFounds = Entry(self.master, width=10)
         self.entryFounds.grid(row=6, column=3, sticky=W)
         self.entryFounds.delete(0, END)
         self.entryFounds.insert(0, "xiv+xvi")
+
+    def add_treeview(self):
+        self.tree = ttk.Treeview(self.master)
+        self.tree.tag_configure('oddrow', background='bisque')
+        self.tree.tag_configure('evenrow', background='lavender')
+        self.tree.heading('#0', text='Link')
+        self.tree["columns"] = ("one", "two", "three")
+        self.tree.column("one", width=100)
+        self.tree.column("two", width=100)
+        self.tree.column("three", width=100)
+        self.tree.heading("one", text="Cim")
+        self.tree.heading("two", text="Ár")
+        self.tree.heading("three", text="Méret")
+        self.tree.grid(row=7, column=0, columnspan=4, rowspan=4, padx=5, pady=5)
+        self.tree.bind("<Double-1>", self.OnDoubleClick)
 
     def init_window(self):
         self.master.title("Alberlet kereso")
@@ -107,7 +105,7 @@ class Gui(Frame):
         ws = self.master.winfo_screenwidth()  # This value is the width of the screen
         hs = self.master.winfo_screenheight()  # This is the height of the screen
         # make my screen dimensions work
-        w = 450  # The value of the width
+        w = 520  # The value of the width
         h = 400  # The value of the height of the window
         # calculate position x, y
         x = (ws / 2) - (w / 2)
@@ -121,35 +119,22 @@ class Gui(Frame):
         self.add_checkboxes()
         self.add_result()
         self.add_district()
+        self.add_treeview()
 
         button = Button(self.master, text="Keresés", command=self.callback_click)
         button.grid(row=5, column=0, columnspan=2)
+        # self.text = Text(self.master, width=40, height=10)
+        # self.text.grid(row=7, column=0, columnspan=5, rowspan=3, padx=5, pady=5)
+        #     self.text.insert(INSERT, "asdasdsdfg \n")
 
-        #self.text = Text(self.master, width=40, height=10)
-        #self.text.grid(row=7, column=0, columnspan=5, rowspan=3, padx=5, pady=5)
-       #     self.text.insert(INSERT, "asdasdsdfg \n")
-
-        tree = ttk.Treeview(self.master)
-        tree["columns"]=("one","two")
-        tree.column("one", width=100)
-        tree.column("two", width=100)
-        tree.heading("one", text="coulmn A")
-        tree.heading("two", text="column B")
-        tree.insert("" , 0,    text="Line 1", values=("1A","1b"))
-        tree.grid(row=7, column=0, columnspan=4, rowspan=4, padx=5, pady=5)
-
+    def OnDoubleClick(self, event):
+        item = self.tree.selection()[0]
+        #print("you clicked on", self.tree.item(item, "text"))
+        webbrowser.open_new_tab(self.tree.item(item, "text"))
 
     def save_file(self):
         with open("Output.txt", "w") as text_file:
             text_file.write("Purchase Amount: {0}\n".format(123345))
-
-
-    def onselect(self, evt):
-        # Note here that Tkinter passes an event object to onselect()
-        w = evt.widget
-        index = int(w.curselection()[0])
-        value = w.get(index)
-        print('You selected item %d: "%s"' % (index, value))
 
     def show_dist(self):
         geolocator = Nominatim()
@@ -164,16 +149,32 @@ class Gui(Frame):
     def callback_click(self):
         _values = [self.Lb1.get(idx) for idx in self.Lb1.curselection()]
         _message = ', '.join(_values)
-        print(_values)
-
-        alberlet = AlberletSearch()
-        alberlet.set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(), self.entrySize2.get(),self.dog, self.furniture, self.entryFounds.get())
-        _results = alberlet.get_urls()
-        self.entryResults.delete(0, END)
-        self.entryResults.insert(0, str(_results))
-
+        #print(_message)
+        if "alberlet.hu" in _message:
+            alberlet = AlberletSearch()
+            alberlet.set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(), self.entrySize2.get(),
+               self.dog, self.furniture, self.entryFounds.get())
+            _numOfResults = alberlet.get_urls()
+            self.entryResults.delete(0, END)
+            self.entryResults.insert(0, str(_numOfResults))
+            self.show_result(alberlet.get_result())
         # self.show_message(alberlet.get_max_page_number())
-        #self.show_message(self.show_dist())
+        # self.show_message(self.show_dist())
+
+    def show_result(self, results):
+        items = results.items()
+        print(items)
+        sorted_items = sorted(items, key=lambda kvt: (kvt[1]['price'], kvt[1]['size']), reverse=True)
+        _i = 0
+        for key, resultValues in sorted_items:
+            _i += 1
+            if _i % 2 == 0:
+                _tag = 'oddrow'
+            else:
+                _tag = 'evenrow'
+            self.tree.insert("", 0, text=key,
+                             values=(resultValues['address'], resultValues['price'], resultValues['size']),
+                             tags=_tag)
 
     def show_message(self, message):
         _messageWindow = Tk()
