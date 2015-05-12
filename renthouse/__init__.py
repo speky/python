@@ -2,8 +2,9 @@
 
 __author__ = 'speky'
 
-import alberlet
 from alberlet import *
+from ingatlanrobot import *
+
 import tkinter
 from tkinter import *
 from tkinter import ttk
@@ -23,10 +24,11 @@ class Gui(Frame):
         self.labelSearch.grid(row=0, column=0, columnspan=2)
         self.Lb1 = Listbox(self.master, selectmode=MULTIPLE, height=3)
         self.Lb1.insert(1, 'alberlet.hu')
+        self.Lb1.insert(1, 'ingatlanrobot.hu')
         # self.Lb1.insert(2, "...")
         self.Lb1.grid(row=1, column=0, columnspan=2, rowspan=2, padx=10)
         # select all
-        self.Lb1.select_set(0, END)
+        #self.Lb1.select_set(0, END)
 
     def add_price(self):
         self.label = Label(self.master, text="Ár (ezerFt)")
@@ -77,7 +79,7 @@ class Gui(Frame):
         self.entryResults.insert(0, "0")
 
     def add_district(self):
-        self.labelDistrict = Label(self.master, text="Kerülets:")
+        self.labelDistrict = Label(self.master, text="Kerület:")
         self.labelDistrict.grid(row=6, column=2, sticky=E)
         self.entryFounds = Entry(self.master, width=10)
         self.entryFounds.grid(row=6, column=3, sticky=W)
@@ -94,19 +96,24 @@ class Gui(Frame):
         self.tree.column("two", width=100)
         self.tree.column("three", width=100)
         self.tree.heading("one", text="Cim")
-        self.tree.heading("two", text="Ár",  command=lambda: self.treeview_sort_column(self.tree, "two", False))
+        self.tree.heading("two", text="Ár", command=lambda: self.treeview_sort_column(self.tree, "two", False))
         self.tree.heading("three", text="Méret", command=lambda: self.treeview_sort_column(self.tree, "three", False))
         self.tree.grid(row=7, column=0, columnspan=4, rowspan=4, padx=5, pady=5)
         self.tree.bind("<Double-1>", self.OnDoubleClick)
 
     def treeview_sort_column(self, tv, col, reverse):
         l = [(tv.set(k, col), k) for k in tv.get_children('')]
-        l.sort(key=lambda x:int(x[0]), reverse=reverse)
+        l.sort(key=lambda x: int(x[0]), reverse=reverse)
 
         # rearrange items in sorted positions
         for index, (val, k) in enumerate(l):
+            _tag = 'evenrow'
+            if index % 2 == 0:
+                _tag = 'oddrow'
+            item = self.tree.item(k)
+            item['tags'] = _tag
+            print(item)
             tv.move(k, '', index)
-
         # reverse sort next time
         tv.heading(col, command=lambda: self.treeview_sort_column(tv, col, not reverse))
 
@@ -131,16 +138,11 @@ class Gui(Frame):
         self.add_result()
         self.add_district()
         self.add_treeview()
-
         button = Button(self.master, text="Keresés", command=self.callback_click)
         button.grid(row=5, column=0, columnspan=2)
-        # self.text = Text(self.master, width=40, height=10)
-        # self.text.grid(row=7, column=0, columnspan=5, rowspan=3, padx=5, pady=5)
-        #     self.text.insert(INSERT, "asdasdsdfg \n")
 
     def OnDoubleClick(self, event):
         item = self.tree.selection()[0]
-        #print("you clicked on", self.tree.item(item, "text"))
         webbrowser.open_new_tab(self.tree.item(item, "text"))
 
     def save_file(self):
@@ -158,23 +160,37 @@ class Gui(Frame):
         return location.address
 
     def callback_click(self):
+        # clean
+        for i in self.tree.get_children():
+            self.tree.delete(i)
+
         _values = [self.Lb1.get(idx) for idx in self.Lb1.curselection()]
         _message = ', '.join(_values)
-        #print(_message)
+
+        # print(_message)
         if "alberlet.hu" in _message:
             alberlet = AlberletSearch()
-            alberlet.set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(), self.entrySize2.get(),
-               self.dog, self.furniture, self.entryFounds.get())
+            alberlet.set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
+                self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
             _numOfResults = alberlet.get_urls()
             self.entryResults.delete(0, END)
             self.entryResults.insert(0, str(_numOfResults))
             self.show_result(alberlet.get_result())
-        # self.show_message(alberlet.get_max_page_number())
-        # self.show_message(self.show_dist())
+            # self.show_message(alberlet.get_max_page_number())
+            # self.show_message(self.show_dist())
+
+        if "ingatlanrobot.hu" in _message:
+            robot = RobotSearch()
+            robot .set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
+                self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
+            _numOfResults = robot.get_urls()
+            self.entryResults.delete(0, END)
+            self.entryResults.insert(0, str(_numOfResults))
+            self.show_result(robot.get_result())
 
     def show_result(self, results):
         items = results.items()
-        #print(items)
+        # print(items)
         sorted_items = sorted(items, key=lambda kvt: (kvt[1]['price'], kvt[1]['size']), reverse=True)
         _i = 0
         for key, resultValues in sorted_items:
@@ -184,8 +200,7 @@ class Gui(Frame):
             else:
                 _tag = 'evenrow'
             self.tree.insert("", 0, text=key,
-                             values=(resultValues['address'], resultValues['price'], resultValues['size']),
-                             tags=_tag)
+                             values=(resultValues['address'], resultValues['price'], resultValues['size']), tags=_tag)
 
     def show_message(self, message):
         _messageWindow = Tk()
