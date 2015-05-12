@@ -30,7 +30,7 @@ class AlberletSearch(base.BaseSearch):
             self.url += self.furniture_string
         self.url += self.size_string+str(min_size)+"-"+str(max_size)+"-m2"
         self.url += self.cost_string+str(min_cost)+"-"+str(max_cost)+"-ezer-ft"
-        print(self.url)
+        #print(self.url)
 
     def get_urls(self):
         _lastPage = int(self.__get_max_page_number())

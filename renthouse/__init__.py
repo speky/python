@@ -94,10 +94,21 @@ class Gui(Frame):
         self.tree.column("two", width=100)
         self.tree.column("three", width=100)
         self.tree.heading("one", text="Cim")
-        self.tree.heading("two", text="Ár")
-        self.tree.heading("three", text="Méret")
+        self.tree.heading("two", text="Ár",  command=lambda: self.treeview_sort_column(self.tree, "two", False))
+        self.tree.heading("three", text="Méret", command=lambda: self.treeview_sort_column(self.tree, "three", False))
         self.tree.grid(row=7, column=0, columnspan=4, rowspan=4, padx=5, pady=5)
         self.tree.bind("<Double-1>", self.OnDoubleClick)
+
+    def treeview_sort_column(self, tv, col, reverse):
+        l = [(tv.set(k, col), k) for k in tv.get_children('')]
+        l.sort(key=lambda x:int(x[0]), reverse=reverse)
+
+        # rearrange items in sorted positions
+        for index, (val, k) in enumerate(l):
+            tv.move(k, '', index)
+
+        # reverse sort next time
+        tv.heading(col, command=lambda: self.treeview_sort_column(tv, col, not reverse))
 
     def init_window(self):
         self.master.title("Alberlet kereso")
@@ -163,7 +174,7 @@ class Gui(Frame):
 
     def show_result(self, results):
         items = results.items()
-        print(items)
+        #print(items)
         sorted_items = sorted(items, key=lambda kvt: (kvt[1]['price'], kvt[1]['size']), reverse=True)
         _i = 0
         for key, resultValues in sorted_items:
