@@ -92,7 +92,7 @@ class Gui(Frame):
         self.tree.tag_configure('evenrow', background='lavender')
         self.tree.heading('#0', text='Link')
         self.tree["columns"] = ("one", "two", "three")
-        self.tree.column("one", width=100)
+        self.tree.column("one", width=200)
         self.tree.column("two", width=100)
         self.tree.column("three", width=100)
         self.tree.heading("one", text="Cim")
@@ -106,6 +106,7 @@ class Gui(Frame):
         l.sort(key=lambda x: int(x[0]), reverse=reverse)
 
         # rearrange items in sorted positions
+        _i = 0
         for index, (val, k) in enumerate(l):
             _tag = 'evenrow'
             if index % 2 == 0:
@@ -123,7 +124,7 @@ class Gui(Frame):
         ws = self.master.winfo_screenwidth()  # This value is the width of the screen
         hs = self.master.winfo_screenheight()  # This is the height of the screen
         # make my screen dimensions work
-        w = 520  # The value of the width
+        w = 620  # The value of the width
         h = 400  # The value of the height of the window
         # calculate position x, y
         x = (ws / 2) - (w / 2)
