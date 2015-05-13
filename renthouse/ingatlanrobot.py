@@ -1,21 +1,54 @@
 __author__ = 'speky'
+<<<<<<< HEAD
+=======
+
+# /kiado-lakas--varos=Budapest-XIV-kerulet,Budapest-XVI-kerulet--ar=0-80--butor=Igen--kisallat=Igen--terulet=30-80/
+>>>>>>> robot
 import requests
 import bs4
 import operator
 import base
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> robot
 class RobotSearch(base.BaseSearch):
 
     def __init__(self):
         base.BaseSearch.__init__(self)
+<<<<<<< HEAD
         self.root_url = 'http://ingatlanrobot.hu/ingatlanok'
         self.index_url = self.root_url + '/kiado-lakas--ar=0-50'
+=======
+        self.root_url = 'http://www.ingatlanrobot.hu/ingatlanok'
+        self.index_url = self.root_url + '/kiado-lakas'
+        self.furniture_string = "--butor=Igen"
+        self.dog_string = "--kisallat=Igen"
+        self.district_string = "--varos="
+        self.size_string = "--terulet="
+        self.cost_string = "--ar="
+
+    def __set_district(self, district):
+        _result = ""
+        _prefix = "Budapest-"
+        _postfix = "-kerulet"
+        for num in district.split('+'):
+            _result += _prefix + num + _postfix + ','
+        _result = _result[:-1]
+        print(_result)
+        return _result
+>>>>>>> robot
 
     def set_params(self, min_cost, max_cost, min_size, max_size, dog, furniture, district):
         self.url = self.index_url
         if len(str(district)) > 0:
             self.url += self.district_string
+<<<<<<< HEAD
             self.url += str(district)
+=======
+            self.url += self.__set_district(district)
+>>>>>>> robot
         if dog == 1:
             self.url += self.dog_string
         if furniture == 1:
@@ -24,6 +57,7 @@ class RobotSearch(base.BaseSearch):
         self.url += self.cost_string+str(min_cost)+"-"+str(max_cost)
         print(self.url)
 
+<<<<<<< HEAD
     def _pre_check(self):
         uri = self.index_url+'/oldal1.html'
         response = requests.get(uri)
