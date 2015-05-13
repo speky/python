@@ -113,7 +113,7 @@ class Gui(Frame):
                 _tag = 'oddrow'
             item = self.tree.item(k)
             item['tags'] = _tag
-            print(item)
+            #print(item)
             tv.move(k, '', index)
         # reverse sort next time
         tv.heading(col, command=lambda: self.treeview_sort_column(tv, col, not reverse))
@@ -168,33 +168,32 @@ class Gui(Frame):
         _values = [self.Lb1.get(idx) for idx in self.Lb1.curselection()]
         _message = ', '.join(_values)
 
-        # print(_message)
+        _numOfResults = 0
+        _result = {}
         if "alberlet.hu" in _message:
             alberlet = AlberletSearch()
             alberlet.set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
                 self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
-            _numOfResults = alberlet.get_urls()
-            self.entryResults.delete(0, END)
-            self.entryResults.insert(0, str(_numOfResults))
-            self.show_result(alberlet.get_result())
+            _numOfResults += alberlet.get_urls()
+            _result.update(alberlet.get_result())
             # self.show_message(alberlet.get_max_page_number())
             # self.show_message(self.show_dist())
 
         if "ingatlanrobot.hu" in _message:
             robot = RobotSearch()
-            #robot .set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
-            #    self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
-            _numOfResults = robot.get_urls()
-            #self.entryResults.delete(0, END)
-            #self.entryResults.insert(0, str(_numOfResults))
-            #self.show_result(robot.get_result())
+            robot .set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
+                self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
+            _numOfResults += robot.get_urls()
+            _result.update(robot.get_result())
+        self.entryResults.delete(0, END)
+        self.entryResults.insert(0, str(_numOfResults))
+        self.show_result(_result)
+
 
     def show_result(self, results):
         items = results.items()
-        # print(items)
-        sorted_items = sorted(items, key=lambda kvt: (kvt[1]['price'], kvt[1]['size']), reverse=True)
         _i = 0
-        for key, resultValues in sorted_items:
+        for key, resultValues in items:
             _i += 1
             if _i % 2 == 0:
                 _tag = 'oddrow'
@@ -202,6 +201,7 @@ class Gui(Frame):
                 _tag = 'evenrow'
             self.tree.insert("", 0, text=key,
                              values=(resultValues['address'], resultValues['price'], resultValues['size']), tags=_tag)
+        self.treeview_sort_column(self.tree, "two", False)
 
     def show_message(self, message):
         _messageWindow = Tk()
