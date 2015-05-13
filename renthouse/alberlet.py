@@ -11,7 +11,6 @@ class AlberletSearch(base.BaseSearch):
         base.BaseSearch.__init__(self)
         self.root_url = 'http://alberlet.hu'
         self.index_url = self.root_url + '/kiado_alberlet/ingatlan-tipus:lakas/keres:advanced/limit:48/megye:budapest'
-        # '/kiado_alberlet/berleti-dij:0-50-ezer-ft/ingatlan-tipus:lakas/ingatlan:tegla/limit:48'
         self.tegla_string = "/ingatlan:tegla"
         self.furniture_string = "/berendezes:2"
         self.dog_string = "/haziallat-engedelyezve:igen"
@@ -33,12 +32,12 @@ class AlberletSearch(base.BaseSearch):
         print(self.url)
 
     def get_urls(self):
-        _lastPage = int(self.__get_max_page_number())
-        #print("lastpage: "+str(_lastPage))
-        for pageNumber in range(1, _lastPage + 1):
-            #print ("pageNumber: " + str(pageNumber))
-            self.__get_page_urls(pageNumber)
-        return self.numberOflinks
+         _lastPage = int(self.__get_max_page_number())
+         #print("lastpage: "+str(_lastPage))
+         for pageNumber in range(1, _lastPage + 1):
+             #print ("pageNumber: " + str(pageNumber))
+             self.__get_page_urls(pageNumber)
+         return self.numberOflinks
 
     def __get_page_urls(self, pageNum):
         response = requests.get(self.url+"/page:"+str(pageNum))

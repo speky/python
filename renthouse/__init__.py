@@ -182,12 +182,12 @@ class Gui(Frame):
 
         if "ingatlanrobot.hu" in _message:
             robot = RobotSearch()
-            robot .set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
-                self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
+            #robot .set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
+            #    self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
             _numOfResults = robot.get_urls()
-            self.entryResults.delete(0, END)
-            self.entryResults.insert(0, str(_numOfResults))
-            self.show_result(robot.get_result())
+            #self.entryResults.delete(0, END)
+            #self.entryResults.insert(0, str(_numOfResults))
+            #self.show_result(robot.get_result())
 
     def show_result(self, results):
         items = results.items()
