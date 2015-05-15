@@ -4,6 +4,7 @@ __author__ = 'speky'
 
 from alberlet import *
 from ingatlanrobot import *
+from ingatlancom import *
 
 import tkinter
 from tkinter import *
@@ -24,11 +25,11 @@ class Gui(Frame):
         self.labelSearch.grid(row=0, column=0, columnspan=2)
         self.Lb1 = Listbox(self.master, selectmode=MULTIPLE, height=3)
         self.Lb1.insert(1, 'alberlet.hu')
-        self.Lb1.insert(1, 'ingatlanrobot.hu')
-        # self.Lb1.insert(2, "...")
+        self.Lb1.insert(2, 'ingatlanrobot.hu')
+        self.Lb1.insert(3, 'ingatlan.com')
         self.Lb1.grid(row=1, column=0, columnspan=2, rowspan=2, padx=10)
         # select all
-        #self.Lb1.select_set(0, END)
+        self.Lb1.select_set(END)
 
     def add_price(self):
         self.label = Label(self.master, text="Ár (ezerFt)")
@@ -181,10 +182,18 @@ class Gui(Frame):
 
         if "ingatlanrobot.hu" in _message:
             robot = RobotSearch()
-            robot .set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
+            robot.set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
                 self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
             _numOfResults += robot.get_urls()
             _result.update(robot.get_result())
+
+        if "ingatlan.com" in _message:
+            ingatlan = IngatlanSearch()
+            ingatlan.set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
+                self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
+            _numOfResults += ingatlan.get_urls()
+            _result.update(ingatlan.get_result())
+
         self.entryResults.delete(0, END)
         self.entryResults.insert(0, str(_numOfResults))
         self.show_result(_result)

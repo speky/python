@@ -24,7 +24,6 @@ class RobotSearch(base.BaseSearch):
         for num in district.split('+'):
             _result += _prefix + num + _postfix + ','
         _result = _result[:-1]
-        print(_result)
         return _result
 
 
