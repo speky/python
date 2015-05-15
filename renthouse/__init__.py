@@ -114,7 +114,7 @@ class Gui(Frame):
                 _tag = 'oddrow'
             item = self.tree.item(k)
             item['tags'] = _tag
-            #print(item)
+            # print(item)
             tv.move(k, '', index)
         # reverse sort next time
         tv.heading(col, command=lambda: self.treeview_sort_column(tv, col, not reverse))
