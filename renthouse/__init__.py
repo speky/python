@@ -5,6 +5,7 @@ __author__ = 'speky'
 from alberlet import *
 from ingatlanrobot import *
 from ingatlancom import *
+from budapestingatlan import *
 
 import tkinter
 from tkinter import *
@@ -27,6 +28,7 @@ class Gui(Frame):
         self.Lb1.insert(1, 'alberlet.hu')
         self.Lb1.insert(2, 'ingatlanrobot.hu')
         self.Lb1.insert(3, 'ingatlan.com')
+        self.Lb1.insert(4, 'budapest.ingatlan.hu')
         self.Lb1.grid(row=1, column=0, columnspan=2, rowspan=2, padx=10)
         # select all
         self.Lb1.select_set(END)
@@ -193,6 +195,13 @@ class Gui(Frame):
                 self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
             _numOfResults += ingatlan.get_urls()
             _result.update(ingatlan.get_result())
+
+        if "ingatlan.com" in _message:
+            bpingatlan = BudapestIngatlanSearch()
+            bpingatlan.set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
+                self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
+            _numOfResults += bpingatlan.get_urls()
+            _result.update(bpingatlan.get_result())
 
         self.entryResults.delete(0, END)
         self.entryResults.insert(0, str(_numOfResults))
