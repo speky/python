@@ -14,8 +14,7 @@ class BudapestIngatlanSearch(base.BaseSearch):
 
     def set_params(self, min_cost, max_cost, min_size, max_size, dog, furniture, district):
         self.url = self.index_url
-        if len(str(district)) > 0:
-            self.url += self.__set_district(district)
+        self.url += self.__set_district(district)
         if min_size != "0":
             self.url += str(min_size)+"nm-tol;"
         if max_size != "x":
@@ -24,6 +23,8 @@ class BudapestIngatlanSearch(base.BaseSearch):
         print(self.url)
 
     def __set_district(self, district):
+        if len(district) == 0:
+            return "budapest:"
         _result = ""
         _prefix = "budapest-"
         _postfix = "-ker"
@@ -31,7 +32,6 @@ class BudapestIngatlanSearch(base.BaseSearch):
             _result += _prefix + num + _postfix + '+'
         _result = _result[:-1]
         return _result+':'
-
 
     def get_urls(self):
          _lastPage = int(self.__get_max_page_number())
@@ -70,8 +70,9 @@ class BudapestIngatlanSearch(base.BaseSearch):
         if _max == None:
             return 1
         # get max page number
-        _pageNum = _max.split('/')[-1]
-        return _max.text[-5:]
+        _pageNum = _max.text.split('/')[-1]
+        _pageNum = _pageNum.strip()
+        return _pageNum[:-6]
 
     def __get_link(self, div):
         _link = div['data-url']
