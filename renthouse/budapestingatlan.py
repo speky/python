@@ -9,16 +9,18 @@ class BudapestIngatlanSearch(base.BaseSearch):
 
     def __init__(self):
         base.BaseSearch.__init__(self)
-        self.root_url = 'http://http://budapest.ingatlan.hu'
+        self.root_url = 'http://budapest.ingatlan.hu'
         self.index_url = self.root_url + '/kiado/lakas/'
 
     def set_params(self, min_cost, max_cost, min_size, max_size, dog, furniture, district):
         self.url = self.index_url
         if len(str(district)) > 0:
             self.url += self.__set_district(district)
-
-        self.url += self.size_string+str(min_size)+"nm-tol;"+str(max_size)+"nm-ig"
-        self.url += self.cost_string+str(min_cost)+"Eft-tol;"+str(max_cost)+"-Eft-ig"
+        if min_size != "0":
+            self.url += str(min_size)+"nm-tol;"
+        if max_size != "x":
+            self.url += str(max_size)+"nm-ig;"
+        self.url += str(min_cost)+"Eft-tol;"+str(max_cost)+"Eft-ig"
         print(self.url)
 
     def __set_district(self, district):
@@ -58,14 +60,14 @@ class BudapestIngatlanSearch(base.BaseSearch):
         _size = _p.text
         _size = ''.join(_size.split())
         # remove m2 string from the end
-        _size = _size[:-2]
-        return _size
+        _size = _size.replace("méret", '')
+        return _size[:-2]
 
     def __get_max_page_number(self):
         _response = requests.get(self.url)
         _soup = bs4.BeautifulSoup(_response.text)
         _max = _soup.find('div', attrs={'class': 'pages'})
-        if (_max == None):
+        if _max == None:
             return 1
         # get max page number
         _pageNum = _max.split('/')[-1]
@@ -79,11 +81,17 @@ class BudapestIngatlanSearch(base.BaseSearch):
 
     def __get_address(self, div):
         _address = div.find('div', attrs={'class': 'title'})
-        return _address.strip()
+        if _address == None:
+            return "-"
+        _addressTxt = _address.text
+        _addressTxt  = _addressTxt.strip()
+        return _addressTxt.replace("Kiadó Lakás", "")
 
     def __get_price(self, div):
         _price = div.find('div', attrs={'class': 'data'})
-        #_price = ''.join(_price.split())
+        if _price == None:
+            return '0'
+        _price = _price.text.strip()
+        _price = _price.replace('.','')
         # remove HUF string from the end
-        _price = _price[:-2]
-        return _price
+        return _price[:-2]

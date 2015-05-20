@@ -196,7 +196,7 @@ class Gui(Frame):
             _numOfResults += ingatlan.get_urls()
             _result.update(ingatlan.get_result())
 
-        if "ingatlan.com" in _message:
+        if "budapest.ingatlan.hu" in _message:
             bpingatlan = BudapestIngatlanSearch()
             bpingatlan.set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
                 self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
