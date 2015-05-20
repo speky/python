@@ -6,6 +6,7 @@ from alberlet import *
 from ingatlanrobot import *
 from ingatlancom import *
 from budapestingatlan import *
+from ingatlanbazar import *
 
 import tkinter
 from tkinter import *
@@ -24,12 +25,13 @@ class Gui(Frame):
     def add_portal_list(self):
         self.labelSearch = Label(self.master, text="Oldalak ahol keres")
         self.labelSearch.grid(row=0, column=0, columnspan=2)
-        self.Lb1 = Listbox(self.master, selectmode=MULTIPLE, height=3)
+        self.Lb1 = Listbox(self.master, selectmode=MULTIPLE, height=6)
         self.Lb1.insert(1, 'alberlet.hu')
         self.Lb1.insert(2, 'ingatlanrobot.hu')
         self.Lb1.insert(3, 'ingatlan.com')
         self.Lb1.insert(4, 'budapest.ingatlan.hu')
-        self.Lb1.grid(row=1, column=0, columnspan=2, rowspan=2, padx=10)
+        self.Lb1.insert(5, 'ingatlanbazar.hu')
+        self.Lb1.grid(row=1, column=0, columnspan=2, rowspan=4, padx=10)
         # select all
         self.Lb1.select_set(END)
 
@@ -202,6 +204,13 @@ class Gui(Frame):
                 self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
             _numOfResults += bpingatlan.get_urls()
             _result.update(bpingatlan.get_result())
+
+        if "ingatlanbazar.hu" in _message:
+            ingatlanBazar = IngatlanBazarSearch()
+            ingatlanBazar.set_params(self.entryPrice.get(), self.entryPrice2.get(), self.entrySize.get(),
+                self.entrySize2.get(), self.dog.get(), self.furniture.get(), self.entryFounds.get())
+            _numOfResults += ingatlanBazar.get_urls()
+            _result.update(ingatlanBazar.get_result())
 
         self.entryResults.delete(0, END)
         self.entryResults.insert(0, str(_numOfResults))
